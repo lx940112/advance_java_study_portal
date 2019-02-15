@@ -47,11 +47,18 @@
           :value="item.siteId">
         </el-option>
       </el-select>
-      页面别名：<el-input v-model="params.pageAliase" style="width: 100px"></el-input>
+      页面别名：
+      <el-input v-model="params.pageAliase" style="width: 100px"></el-input>
       <el-button type="primary" v-on:click="query" size="small">查询</el-button>
-      <router-link class="mui-tab-item" :to="{path:'/cms/page/add/'}">
+      <router-link class="mui-tab-item" :to="{path:'/cms/page/add/',query:{
+        page:this.params.page,
+        siteId:this.params.siteId,
+        pageAliase: this.params.pageAliase
+        }
+      }">
         <el-button type="primary" size="small">新增页面</el-button>
       </router-link>
+
     </el-form>
 
 
@@ -71,7 +78,15 @@
       </el-table-column>
       <el-table-column prop="pagePhysicalPath" label="物理路径" width="300">
       </el-table-column>
-      <el-table-column prop="pageCreateTime" label="创建时间" >
+      <el-table-column prop="pageCreateTime" label="创建时间">
+      </el-table-column>
+      <el-table-column label="操作" width="80">
+        <template slot-scope="page">
+          <el-button
+            size="small"type="text"
+            @click="edit(page.row.pageId)">编辑
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination
@@ -91,52 +106,64 @@
   export default {
     data() {
       return {
-        siteList:[],//站点列表
-        list:[],
-        total:0,
-        params:{
-          siteId:'',
-          pageAliase:'',
-          page:1,//页码
-          size:10//每页显示个数
+        siteList: [],//站点列表
+        list: [],
+        total: 0,
+        params: {
+          siteId: '',
+          pageAliase: '',
+          page: 1,//页码
+          size: 10//每页显示个数
         }
       }
     },
-    methods:{
+    methods: {
       // 分页查询
-      changePage:function (page) {
+      changePage: function (page) {
         this.params.page = page;
         this.query()
       },
       //查询
-      query:function () {
+      query: function () {
         // alert("查询")
         // 调用服务端的接口
-        cmsApi.page_list(this.params.page,this.params.size,this.params).then((result)=>{
+        cmsApi.page_list(this.params.page, this.params.size, this.params).then((result) => {
           // 将结果数据赋值给数据模型对象
           console.log(result)
-          this.list=result.queryResult.list;
-          this.total=result.queryResult.total;
+          this.list = result.queryResult.list;
+          this.total = result.queryResult.total;
 
         })
       },
+      //修改
+      edit:function (pageId) {
+        this.$router.push({ path: '/cms/page/update/'+pageId,query:{
+            page: this.params.page,
+            siteId: this.params.siteId}})
+      },
       //查询所有站点ID及名称
-      querySiteList:function () {
+      querySiteList: function () {
 
 
       }
     },
-  mounted(){
-    // 当DOM元素渲染完成后调用query
-    this.query();
-    //初始化站点列表
-    this.siteList=[
-      {
-        siteId: '5a751fab6abb5044e0d19ea1',
-        siteName:'门户主站'
-      }
-    ]
-  }
+    created() {
+      //从路由上获取参数
+      this.params.page = Number.parseInt(this.$route.query.page || 1);
+      this.params.siteId = this.$route.query.siteId || '';
+      this.params.pageAliase = this.$route.query.pageAliase || '';
+    },
+    mounted() {
+      // 当DOM元素渲染完成后调用query
+      this.query();
+      //初始化站点列表
+      this.siteList = [
+        {
+          siteId: '5a751fab6abb5044e0d19ea1',
+          siteName: '门户主站'
+        }
+      ]
+    }
   }
 </script>
 

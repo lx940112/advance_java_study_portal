@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :model="pageForm" label-width="80px">
+    <el-form :model="pageForm" :rules="pageFormRules"  label-width="80px" ref="pageForm">
       <el-form-item label="所属站点" prop="siteId">
         <el-select v-model="pageForm.siteId" placeholder="请选择站点">
           <el-option
@@ -71,25 +71,76 @@
           pagePhysicalPath: '',
           pageType: '',
           pageCreateTime: new Date()
+        },
+        pageFormRules: {
+          siteId:[
+            {required: true, message: '请选择站点', trigger: 'blur'}
+          ],
+          templateId:[
+            {required: true, message: '请选择模版', trigger: 'blur'}
+          ],
+          pageName: [
+            {required: true, message: '请输入页面名称', trigger: 'blur'}
+          ],
+          pageWebPath: [
+            {required: true, message: '请输入访问路径', trigger: 'blur'}
+          ],
+          pagePhysicalPath: [
+            {required: true, message: '请输入物理路径', trigger: 'blur'}
+          ]
         }
       }
     },
     methods: {
       addSubmit() {
-        alert("提交")
+        this.$refs['pageForm'].validate((valid) => {
+          if (valid) {//表单校验成功
+            //表单提交确认
+            this.$confirm('去否确认提交新增页面?', '提示', {}).then(() => {
+// alert('提交!');
+              //调用page_add方法请求服务端的新增页面接口
+              cmsApi.page_add(this.pageForm).then(res => {
+                //解析响应内容
+                if (res.success) {
+                  /*this.$message({
+                    message:'新增成功',
+                    type:'success'
+                  });*/
+                  this.$message.success('新增成功');
+                  //然后清空表单
+                  this.$refs['pageForm'].resetFields();
+                } else {
+                  this.$message.error('新增失败');
+                }
+              });
+            });
+          } else {
+            console.log('验证失败!!');
+            return false;
+          }
+        });
+      },
+      go_back(){
+        this.$router.push({
+          path:'/cms/page/list',query: {
+            page: this.$route.query.page,
+            siteId:this.$route.query.siteId,
+            pageAliase:this.$route.query.pageAliase
+          }
+        })
       }
     },
     created:function(){
       //初始化站点列表
       this.siteList = [
         {
-          siteId:'5a751fab6abb5044e0d19ea1',
-          siteName:'门户主站'
+          siteId: '5a751fab6abb5044e0d19ea1',
+          siteName: '门户主站'
         },
         {
-          siteId:'102',siteName:'测试站'
+          siteId: '102', siteName: '测试站'
         }
-      ]
+      ];
       //模板列表
       this.templateList = [
         {
