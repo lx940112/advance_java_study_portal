@@ -111,9 +111,30 @@
         this.$refs.pageForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              cmsApi.page_edit(this.pageId,this.pageForm).then((res) => {
+                console.log(res);
+                if(res.success){
+                  this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                  });
+                  //自动返回
+                  this.go_back();
+                }else{
+                  this.$message.error('修改失败');
+                }
+              });
+            });
+          }
+        });
+      },
+      /*editSubmit(){
+        this.$refs.pageForm.validate((valid) => {
+          if (valid) {
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.addLoading = true;
               cmsApi.page_edit(this.pageForm).then((res) => {
-                  console.log(res);
+                  console.log(res,'edit res');
                 if(res.success){
                   this.addLoading = false;
                   this.$message({
@@ -131,16 +152,19 @@
             });
           }
         });
-      }
+      }*/
     },
     created: function () {
+      //页面参数通过路由传入，这里通过this.$route.params来获取
       this.pageId=this.$route.params.pageId;
       //根据主键查询页面信息
       cmsApi.page_get(this.pageId).then((res) => {
-        console.log(res);
-        if(res.success){
-          this.pageForm = res.cmsPage;
+        if (res) {
+          this.pageForm = res;
         }
+       /* if(res.success){
+          this.pageForm = res.cmsPage;
+        }*/
       });
     },
     mounted:function(){
