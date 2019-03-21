@@ -120,8 +120,8 @@
     methods: {
       // 分页查询
       changePage: function (page) {
-        this.params.page = page;
-        this.query()
+          this.params.page = page;
+          this.query()
       },
       //查询
       query: function () {
@@ -129,7 +129,7 @@
         // 调用服务端的接口
         cmsApi.page_list(this.params.page, this.params.size, this.params).then((result) => {
           // 将结果数据赋值给数据模型对象
-          console.log(result)
+          console.log(result,"————————————————")
           this.list = result.queryResult.list;
           this.total = result.queryResult.total;
 
