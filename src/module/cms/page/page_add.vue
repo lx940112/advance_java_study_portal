@@ -109,6 +109,8 @@
                   this.$message.success('新增成功');
                   //然后清空表单
                   this.$refs['pageForm'].resetFields();
+                }else if (res.message) {
+                  this.$message.error(res.message);
                 } else {
                   this.$message.error('新增失败');
                 }

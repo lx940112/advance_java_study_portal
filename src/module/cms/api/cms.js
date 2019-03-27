@@ -20,6 +20,10 @@ export const page_get = id => {
   return http.requestQuickGet(apiUrl + '/cms/page/get/' + id)
 };
 /*页面修改，采用put方法*/
-export const page_edit = (id,params) => {
-  return http.requestPut(apiUrl+'/cms/page/update/'+id,params)
-}
+export const page_edit = (id, params) => {
+  return http.requestPut(apiUrl + '/cms/page/update/' + id, params)
+};
+/*页面删除*/
+export const page_del = id => {
+  return http.requestDelete(apiUrl + '/cms/page/del/' + id)
+};

@@ -80,11 +80,15 @@
       </el-table-column>
       <el-table-column prop="pageCreateTime" label="创建时间">
       </el-table-column>
-      <el-table-column label="操作" width="80">
+      <el-table-column label="操作" width="120">
         <template slot-scope="page">
           <el-button
-            size="small"type="text"
+            size="small" type="text"
             @click="edit(page.row.pageId)">编辑
+          </el-button>
+          <el-button
+            size="small" type="text"
+            @click="del(page.row.pageId)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -120,8 +124,8 @@
     methods: {
       // 分页查询
       changePage: function (page) {
-          this.params.page = page;
-          this.query()
+        this.params.page = page;
+        this.query()
       },
       //查询
       query: function () {
@@ -129,17 +133,39 @@
         // 调用服务端的接口
         cmsApi.page_list(this.params.page, this.params.size, this.params).then((result) => {
           // 将结果数据赋值给数据模型对象
-          console.log(result,"————————————————")
+          console.log(result, "————————————————")
           this.list = result.queryResult.list;
           this.total = result.queryResult.total;
 
         })
       },
       //修改
-      edit:function (pageId) {
-        this.$router.push({ path: '/cms/page/update/'+pageId,query:{
+      edit: function (pageId) {
+        this.$router.push({
+          path: '/cms/page/update/' + pageId, query: {
             page: this.params.page,
-            siteId: this.params.siteId}})
+            siteId: this.params.siteId
+          }
+        })
+      },
+      del: function (pageId) {
+        this.$confirm('确认删除此页面吗?', '提示', {}).then(() => {
+          cmsApi.page_del(pageId).then((res) => {
+            if (res.success) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              //查询页面
+              this.query()
+            } else {
+              this.$message({
+                type: 'error',
+                message: '删除失败!'
+              });
+            }
+          })
+        })
       },
       //查询所有站点ID及名称
       querySiteList: function () {
