@@ -19,6 +19,12 @@ export const page_add = params => {
 export const page_get = id => {
   return http.requestQuickGet(apiUrl + '/cms/page/get/' + id)
 };
+
+/*页面查询*/
+export const page_getSiteList =() => {
+  return http.requestQuickGet(apiUrl + '/cms/page/getSiteList/')
+};
+
 /*页面修改，采用put方法*/
 export const page_edit = (id, params) => {
   return http.requestPut(apiUrl + '/cms/page/update/' + id, params)

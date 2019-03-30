@@ -169,7 +169,9 @@
       },
       //查询所有站点ID及名称
       querySiteList: function () {
-
+        cmsApi.page_getSiteList().then((res) => {
+          this.siteList = res;
+        })
 
       }
     },
@@ -183,12 +185,13 @@
       // 当DOM元素渲染完成后调用query
       this.query();
       //初始化站点列表
-      this.siteList = [
+      /*this.siteList = [
         {
           siteId: '5a751fab6abb5044e0d19ea1',
           siteName: '门户主站'
         }
-      ]
+      ]*/
+      this.querySiteList();
     }
   }
 </script>
