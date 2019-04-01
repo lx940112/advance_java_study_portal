@@ -43,7 +43,7 @@
         <el-option
           v-for="item in siteList"
           :key="item.siteId"
-          :label="item.siteName"
+          :label="item.pageAliase"
           :value="item.siteId">
         </el-option>
       </el-select>
@@ -133,7 +133,7 @@
         // 调用服务端的接口
         cmsApi.page_list(this.params.page, this.params.size, this.params).then((result) => {
           // 将结果数据赋值给数据模型对象
-          console.log(result, "————————————————")
+          // console.log(result, "————————————————")
           this.list = result.queryResult.list;
           this.total = result.queryResult.total;
 
@@ -170,7 +170,11 @@
       //查询所有站点ID及名称
       querySiteList: function () {
         cmsApi.page_getSiteList().then((res) => {
-          this.siteList = res;
+          console.log(res);
+          if (res.success) {
+            this.siteList = res.queryResult.list;
+          }
+
         })
 
       }
